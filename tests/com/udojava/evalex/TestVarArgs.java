@@ -1,60 +1,58 @@
 package com.udojava.evalex;
 
-import static org.junit.Assert.*;
-
-import java.math.BigDecimal;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.udojava.evalex.Expression.ExpressionException;
-import com.udojava.evalex.Expression.Function;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.List;
 
 public class TestVarArgs {
 
 	@Test
 	public void testSimple() {
-		Expression e = new Expression("max(1)");
+		BigDecimalEx e = new BigDecimalEx("max(1)");
 		assertEquals("1", e.eval().toPlainString());
 		
-		e = new Expression("max(4,8)");
+		e = new BigDecimalEx("max(4,8)");
 		assertEquals("8", e.eval().toPlainString());
 		
-		e = new Expression("max(12,4,8)");
+		e = new BigDecimalEx("max(12,4,8)");
 		assertEquals("12", e.eval().toPlainString());
 		
-		e = new Expression("max(12,4,8,16,32)");
+		e = new BigDecimalEx("max(12,4,8,16,32)");
 		assertEquals("32", e.eval().toPlainString());
 	}
 
 	@Test
 	public void testNested() {
-		Expression e = new Expression("max(1,2,max(3,4,5,max(9,10,3,4,5),8),7)");
+		BigDecimalEx e = new BigDecimalEx("max(1,2,max(3,4,5,max(9,10,3,4,5),8),7)");
 		assertEquals("10", e.eval().toPlainString());
 	}
 	
 	@Test
 	public void testZero() {
-		Expression e = new Expression("max(0)");
+		BigDecimalEx e = new BigDecimalEx("max(0)");
 		assertEquals("0", e.eval().toPlainString());
 		
-		e = new Expression("max(0,3)");
+		e = new BigDecimalEx("max(0,3)");
 		assertEquals("3", e.eval().toPlainString());
 		
-		e = new Expression("max(2,0,-3)");
+		e = new BigDecimalEx("max(2,0,-3)");
 		assertEquals("2", e.eval().toPlainString());
 		
-		e = new Expression("max(-2,0,-3)");
+		e = new BigDecimalEx("max(-2,0,-3)");
 		assertEquals("0", e.eval().toPlainString());
 		
-		e = new Expression("max(0,0,0,0)");
+		e = new BigDecimalEx("max(0,0,0,0)");
 		assertEquals("0", e.eval().toPlainString());
 	}
 	
 	@Test
 	public void testError() {
 		String err = "";
-		Expression e = new Expression("max()");
+		BigDecimalEx e = new BigDecimalEx("max()");
 		try {
 			e.eval();
 		} catch (ExpressionException ex) {
@@ -65,10 +63,10 @@ public class TestVarArgs {
 
 	@Test
 	public void testCustomFunction1() {
-		Expression e = new Expression("3 * AVG(2,4)");
-		e.addFunction(e.new Function("AVG", -1) {
+		BigDecimalEx e = new BigDecimalEx("3 * AVG(2,4)");
+		e.addFunction(new Function<BigDecimal>("AVG", -1) {
 			@Override
-			public BigDecimal eval(List<BigDecimal> parameters) {
+			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				if (parameters.size() == 0) {
 					throw new ExpressionException("AVG requires at least one parameter");
 				}
@@ -85,10 +83,10 @@ public class TestVarArgs {
 	
 	@Test
 	public void testCustomFunction2() {
-		Expression e = new Expression("4 * AVG(2,4,6,8,10,12)");
-		e.addFunction(e.new Function("AVG", -1) {
+		BigDecimalEx e = new BigDecimalEx("4 * AVG(2,4,6,8,10,12)");
+		e.addFunction(new Function<BigDecimal>("AVG", -1) {
 			@Override
-			public BigDecimal eval(List<BigDecimal> parameters) {
+			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				if (parameters.size() == 0) {
 					throw new ExpressionException("AVG requires at least one parameter");
 				}

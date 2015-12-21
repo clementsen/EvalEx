@@ -13,7 +13,7 @@ public class TestNested {
 		String z = "2*x + 3*y";
 		String a = "2*x + 4*z";
 
-		Expression e = new Expression(a);
+		BigDecimalEx e = new BigDecimalEx(a);
 		e.with("x", x);
 		e.with("y", y);
 		e.with("z", z);
@@ -23,7 +23,7 @@ public class TestNested {
 
 	@Test
 	public void testReplacements() {
-		Expression e = new Expression("3+a+aa+aaa").with("a", "1*x")
+		Expression e = new BigDecimalEx("3+a+aa+aaa").with("a", "1*x")
 				.with("aa", "2*x").with("aaa", "3*x").with("x", "2");
 		assertEquals("15", e.eval().toString());
 	}

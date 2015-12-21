@@ -2,20 +2,21 @@ package com.udojava.evalex;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.List;
 
 public class TestCustoms {
 
 	@Test
 	public void testCustomOperator() {
-		Expression e = new Expression("2.1234 >> 2");
+		BigDecimalEx e = new BigDecimalEx("2.1234 >> 2");
 		
-		e.addOperator(e.new Operator(">>", 30, true) {
+		e.addOperator(new Operator<BigDecimal>(">>", 30, true) {
 			@Override
-			public BigDecimal eval(BigDecimal v1, BigDecimal v2) {
+			public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
 				return v1.movePointRight(v2.toBigInteger().intValue());
 			}
 		});
@@ -25,10 +26,10 @@ public class TestCustoms {
 	
 	@Test
 	public void testCustomFunction() {
-		Expression e = new Expression("2 * average(12,4,8)");
-		e.addFunction(e.new Function("average", 3) {
+		BigDecimalEx e = new BigDecimalEx("2 * average(12,4,8)");
+		e.addFunction(new Function<BigDecimal>("average", 3) {
 			@Override
-			public BigDecimal eval(List<BigDecimal> parameters) {
+			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				BigDecimal sum = parameters.get(0).add(parameters.get(1)).add(parameters.get(2));
 				return sum.divide(new BigDecimal(3));
 			}
@@ -39,10 +40,10 @@ public class TestCustoms {
 	
 	@Test
 	public void testCustomFunctionVariableParameters() {
-		Expression e = new Expression("2 * average(12,4,8,2,9)");
-		e.addFunction(e.new Function("average", -1) {
+		BigDecimalEx e = new BigDecimalEx("2 * average(12,4,8,2,9)");
+		e.addFunction(new Function<BigDecimal>("average", -1) {
 			@Override
-			public BigDecimal eval(List<BigDecimal> parameters) {
+			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				BigDecimal sum = new BigDecimal(0);
 				for (BigDecimal parameter : parameters) {
 					sum = sum.add(parameter);
