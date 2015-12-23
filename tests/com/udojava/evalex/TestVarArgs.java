@@ -64,7 +64,7 @@ public class TestVarArgs {
 	@Test
 	public void testCustomFunction1() {
 		BigDecimalEx e = new BigDecimalEx("3 * AVG(2,4)");
-		e.addFunction(new Function<BigDecimal>("AVG", -1) {
+		e.addFunction(new Function<BigDecimal, MathContext>("AVG", -1) {
 			@Override
 			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				if (parameters.size() == 0) {
@@ -84,7 +84,7 @@ public class TestVarArgs {
 	@Test
 	public void testCustomFunction2() {
 		BigDecimalEx e = new BigDecimalEx("4 * AVG(2,4,6,8,10,12)");
-		e.addFunction(new Function<BigDecimal>("AVG", -1) {
+		e.addFunction(new Function<BigDecimal, MathContext>("AVG", -1) {
 			@Override
 			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				if (parameters.size() == 0) {

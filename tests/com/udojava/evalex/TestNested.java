@@ -27,4 +27,20 @@ public class TestNested {
 				.with("aa", "2*x").with("aaa", "3*x").with("x", "2");
 		assertEquals("15", e.eval().toString());
 	}
+
+    @Test
+    public void testReuseExpression() {
+        String a = "2*x + 4*y";
+
+        BigDecimalEx e = new BigDecimalEx(a);
+        e.with("x", "2");
+        e.with("y", "3");
+
+        assertEquals("16", e.eval().toString());
+
+        e.with("x", "3");
+        e.with("y", "2");
+
+        assertEquals("14", e.eval().toString());
+    }
 }

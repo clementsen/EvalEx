@@ -8,7 +8,7 @@ import java.util.Map;
  * Expression tokenizer that allows to iterate over a {@link String}
  * expression token by token. Blank characters will be skipped.
  */
-class Tokenizer<T extends Number> implements Iterator<String> {
+class Tokenizer<T extends Number, C> implements Iterator<String> {
 
     /**
      * Actual position in expression string.
@@ -27,7 +27,7 @@ class Tokenizer<T extends Number> implements Iterator<String> {
     /**
      * All defined operators with name and implementation.
      */
-    private Map<String, Operator<T>> operators = new HashMap<>();
+    private Map<String, Operator<T,C>> operators = new HashMap<>();
 
     /**
      * Creates a new tokenizer for an expression.
@@ -36,7 +36,7 @@ class Tokenizer<T extends Number> implements Iterator<String> {
      *            The expression string.
      * @param operators
      */
-    public Tokenizer(String input, Map<String, Operator<T>> operators) {
+    public Tokenizer(String input, Map<String, Operator<T,C>> operators) {
         this.input = input.trim();
         this.operators = operators;
     }

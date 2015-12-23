@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotSame;
 
 import org.junit.Test;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 
@@ -232,7 +231,7 @@ public class TestEval {
 	
 	@Test
 	public void testMathContext() {
-		Expression<BigDecimal> e = null;
+        BigDecimalEx e = null;
 		e = new BigDecimalEx("2.5/3").setPrecision(2);
 		assertEquals("0.83", e.eval().toPlainString());
 		

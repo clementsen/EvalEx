@@ -1,12 +1,10 @@
 package com.udojava.evalex;
 
-import java.math.MathContext;
-
 /**
  * Abstract definition of a supported operator. An operator is defined by
  * its name (pattern), precedence and if it is left- or right associative.
  */
-public abstract class Operator<T extends Number> {
+public abstract class Operator<T extends Number, C> {
     /**
      * This operators name (pattern).
      */
@@ -56,9 +54,9 @@ public abstract class Operator<T extends Number> {
      *            Operand 1.
      * @param v2
      *            Operand 2.
-     * @param mc
-     *            Math Context
+     * @param ctx
+     *            Context
      * @return The result of the operation.
      */
-    public abstract T eval(T v1, T v2, MathContext mc);
+    public abstract T eval(T v1, T v2, C ctx);
 }

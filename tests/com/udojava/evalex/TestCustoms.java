@@ -14,7 +14,7 @@ public class TestCustoms {
 	public void testCustomOperator() {
 		BigDecimalEx e = new BigDecimalEx("2.1234 >> 2");
 		
-		e.addOperator(new Operator<BigDecimal>(">>", 30, true) {
+		e.addOperator(new Operator<BigDecimal, MathContext>(">>", 30, true) {
 			@Override
 			public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
 				return v1.movePointRight(v2.toBigInteger().intValue());
@@ -27,7 +27,7 @@ public class TestCustoms {
 	@Test
 	public void testCustomFunction() {
 		BigDecimalEx e = new BigDecimalEx("2 * average(12,4,8)");
-		e.addFunction(new Function<BigDecimal>("average", 3) {
+		e.addFunction(new Function<BigDecimal, MathContext>("average", 3) {
 			@Override
 			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				BigDecimal sum = parameters.get(0).add(parameters.get(1)).add(parameters.get(2));
@@ -41,7 +41,7 @@ public class TestCustoms {
 	@Test
 	public void testCustomFunctionVariableParameters() {
 		BigDecimalEx e = new BigDecimalEx("2 * average(12,4,8,2,9)");
-		e.addFunction(new Function<BigDecimal>("average", -1) {
+		e.addFunction(new Function<BigDecimal, MathContext>("average", -1) {
 			@Override
 			public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				BigDecimal sum = new BigDecimal(0);

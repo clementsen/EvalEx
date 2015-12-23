@@ -1,23 +1,13 @@
 package com.udojava.evalex;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Abstract definition of a supported expression function. A function is
  * defined by a name, the number of parameters and the actual processing
  * implementation.
  */
-public abstract class Function<T extends Number, C> {
-    /**
-     * Name of this function.
-     */
-    private String name;
-    /**
-     * Number of parameters expected for this function.
-     * <code>-1</code> denotes a variable number of parameters.
-     */
-    private int numParams;
+public abstract class PureFunction<T extends Number> extends Function<T, Void> {
 
     /**
      * Creates a new function with given name and parameter count.
@@ -28,21 +18,13 @@ public abstract class Function<T extends Number, C> {
      *            The number of parameters for this function.
      *            <code>-1</code> denotes a variable number of parameters.
      */
-    public Function(String name, int numParams) {
-        this.name = name.toUpperCase(Locale.ROOT);
-        this.numParams = numParams;
+    public PureFunction(String name, int numParams) {
+        super(name, numParams);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getNumParams() {
-        return numParams;
-    }
-
-    public boolean numParamsVaries() {
-        return numParams < 0;
+    @Override
+    public T eval(List<T> parameters, Void ctx) {
+        return eval(parameters, null);
     }
 
     /**
@@ -51,10 +33,9 @@ public abstract class Function<T extends Number, C> {
      * @param parameters
      *            Parameters will be passed by the expression evaluator as a
      *            {@link List} of values.
-     * @param ctx
      * @return The function must return a new value as a
      *         computing result.
      */
-    public abstract T eval(List<T> parameters, C ctx);
+    public abstract T eval(List<T> parameters);
 
 }

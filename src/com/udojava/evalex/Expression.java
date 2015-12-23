@@ -26,8 +26,6 @@
  */
 package com.udojava.evalex;
 
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -355,12 +353,12 @@ import java.util.function.BiFunction;
  * 
  * @author Udo Klimaschewski (http://about.me/udo.klimaschewski)
  */
-public abstract class Expression<T extends Number> {
+public abstract class Expression<T extends Number, C> {
 
 	/**
-	 * The {@link MathContext} to use for calculations.
+	 * The context to use for calculations.
 	 */
-	private MathContext mc = null;
+	private C ctx = null;
 
 	/**
 	 * The original infix expression.
@@ -375,12 +373,12 @@ public abstract class Expression<T extends Number> {
 	/**
      * All defined operators with name and implementation.
      */
-	private Map<String, Operator<T>> operators = new HashMap<>();
+	private Map<String, Operator<T,C>> operators = new HashMap<>();
 
 	/**
 	 * All defined functions with name and implementation.
 	 */
-	private Map<String, Function<T>> functions = new HashMap<>();
+	private Map<String, Function<T,C>> functions = new HashMap<>();
 
 	/**
 	 * All defined variables with name and value.
@@ -400,17 +398,17 @@ public abstract class Expression<T extends Number> {
 	 * @param expression
 	 *            The expression. E.g. <code>"2.4*sin(3)/(2-4)"</code> or
 	 *            <code>"sin(y)>0 & max(z, 3)>3"</code>
-	 * @param defaultMathContext
-	 *            The {@link MathContext} to use by default.
+	 * @param ctx
+	 *            The context to use by default.
 	 */
-	public Expression(String expression, MathContext defaultMathContext, BiFunction<String, MathContext, T> val, T paramsStart) {
-		this.mc = defaultMathContext;
+	public Expression(String expression, C ctx, BiFunction<String, C, T> val, T paramsStart) {
+		this.ctx = ctx;
 		this.expression = expression;
         this.val = val;
         this.PARAMS_START = paramsStart;
 	}
 
-    private BiFunction<String, MathContext, T> val;
+    private BiFunction<String, C, T> val;
 
 	/**
 	 * Is the string a number?
@@ -445,7 +443,7 @@ public abstract class Expression<T extends Number> {
 		List<String> outputQueue = new ArrayList<>();
 		Stack<String> stack = new Stack<>();
 
-		Tokenizer<T> tokenizer = new Tokenizer<>(expression, operators);
+		Tokenizer<T,C> tokenizer = new Tokenizer<>(expression, operators);
 
 		String lastFunction = null;
 		String previousToken = null;
@@ -524,7 +522,7 @@ public abstract class Expression<T extends Number> {
 		return outputQueue;
 	}
 
-    public abstract T round(T value, MathContext mc);
+    public abstract T round(T value, C ctx);
 
 	/**
 	 * Evaluates the expression.
@@ -539,11 +537,11 @@ public abstract class Expression<T extends Number> {
 			if (operators.containsKey(token)) {
 				T v1 = stack.pop();
 				T v2 = stack.pop();
-				stack.push(operators.get(token).eval(v2, v1, mc));
+				stack.push(operators.get(token).eval(v2, v1, ctx));
 			} else if (variables.containsKey(token)) {
-				stack.push(round(variables.get(token), mc));
+				stack.push(round(variables.get(token), ctx));
 			} else if (functions.containsKey(token.toUpperCase(Locale.ROOT))) {
-				Function<T> f = functions.get(token.toUpperCase(Locale.ROOT));
+				Function<T,C> f = functions.get(token.toUpperCase(Locale.ROOT));
 				List<T> p = new ArrayList<>(
 						!f.numParamsVaries() ? f.getNumParams() : 0);
 				// pop parameters off the stack until we hit the start of 
@@ -557,12 +555,12 @@ public abstract class Expression<T extends Number> {
 				if (!f.numParamsVaries() && p.size() != f.getNumParams()) {
 					throw new ExpressionException("Function " + token + " expected " + f.getNumParams() + " parameters, got " + p.size());
 				}
-				T fResult = f.eval(p, mc);
+				T fResult = f.eval(p, ctx);
 				stack.push(fResult);
 			} else if ("(".equals(token)) {
 				stack.push(PARAMS_START);
 			} else {
-				stack.push(val.apply(token, mc));
+				stack.push(val.apply(token, ctx));
 			}
 		}
 		return stripTrailingZeros(stack.pop());
@@ -571,29 +569,23 @@ public abstract class Expression<T extends Number> {
     public abstract T stripTrailingZeros(T value);
 
     /**
-	 * Sets the precision for expression evaluation.
-	 * 
-	 * @param precision
-	 *            The new precision.
-	 * 
-	 * @return The expression, allows to chain methods.
-	 */
-	public Expression<T> setPrecision(int precision) {
-		this.mc = new MathContext(precision);
-		return this;
-	}
+     * Sets the context for expression evaluation.
+     *
+     * @param ctx
+     *            The new context.
+     */
+    public void setContext(C ctx) {
+        this.ctx = ctx;
+    }
 
-	/**
-	 * Sets the rounding mode for expression evaluation.
-	 * 
-	 * @param roundingMode
-	 *            The new rounding mode.
-	 * @return The expression, allows to chain methods.
-	 */
-	public Expression<T> setRoundingMode(RoundingMode roundingMode) {
-		this.mc = new MathContext(mc.getPrecision(), roundingMode);
-		return this;
-	}
+    /**
+     * Gets the context for expression evaluation.
+     *
+     * @return The context.
+     */
+    public C getContext() {
+        return ctx;
+    }
 
 	/**
 	 * Adds an operator to the list of supported operators.
@@ -603,7 +595,7 @@ public abstract class Expression<T extends Number> {
 	 * @return The previous operator with that name, or <code>null</code> if
 	 *         there was none.
 	 */
-	public Operator<T> addOperator(Operator<T> operator) {
+	public Operator<T,C> addOperator(Operator<T,C> operator) {
 		return operators.put(operator.getOper(), operator);
 	}
 
@@ -615,7 +607,7 @@ public abstract class Expression<T extends Number> {
 	 * @return The previous operator with that name, or <code>null</code> if
 	 *         there was none.
 	 */
-	public Function<T> addFunction(Function<T> function) {
+	public Function<T,C> addFunction(Function<T,C> function) {
 		return functions.put(function.getName(), function);
 	}
 
@@ -628,7 +620,7 @@ public abstract class Expression<T extends Number> {
 	 *            The variable value.
 	 * @return The expression, allows to chain methods.
 	 */
-	public Expression<T> setVariable(String variable, T value) {
+	public Expression<T,C> setVariable(String variable, T value) {
 		variables.put(variable, value);
 		return this;
 	}
@@ -642,9 +634,9 @@ public abstract class Expression<T extends Number> {
 	 *            The variable value.
 	 * @return The expression, allows to chain methods.
 	 */
-	public Expression<T> setVariable(String variable, String value) {
+	public Expression<T,C> setVariable(String variable, String value) {
 		if (isNumber(value))
-			variables.put(variable, val.apply(value, mc));
+			variables.put(variable, val.apply(value, ctx));
 		else {
 			expression = expression.replaceAll("\\b" + variable + "\\b", "("
 					+ value + ")");
@@ -662,7 +654,7 @@ public abstract class Expression<T extends Number> {
 	 *            The variable value.
 	 * @return The expression, allows to chain methods.
 	 */
-	public Expression<T> with(String variable, T value) {
+	public Expression<T,C> with(String variable, T value) {
 		return setVariable(variable, value);
 	}
 
@@ -675,7 +667,7 @@ public abstract class Expression<T extends Number> {
 	 *            The variable value.
 	 * @return The expression, allows to chain methods.
 	 */
-	public Expression<T> and(String variable, String value) {
+	public Expression<T,C> and(String variable, String value) {
 		return setVariable(variable, value);
 	}
 
@@ -688,7 +680,7 @@ public abstract class Expression<T extends Number> {
 	 *            The variable value.
 	 * @return The expression, allows to chain methods.
 	 */
-	public Expression<T> and(String variable, T value) {
+	public Expression<T,C> and(String variable, T value) {
 		return setVariable(variable, value);
 	}
 
@@ -701,7 +693,7 @@ public abstract class Expression<T extends Number> {
 	 *            The variable value.
 	 * @return The expression, allows to chain methods.
 	 */
-	public Expression<T> with(String variable, String value) {
+	public Expression<T,C> with(String variable, String value) {
 		return setVariable(variable, value);
 	}
 
@@ -712,7 +704,7 @@ public abstract class Expression<T extends Number> {
 	 * @return A new iterator instance for this expression.
 	 */
 	public Iterator<String> getExpressionTokenizer() {
-		return new Tokenizer<T>(this.expression, operators);
+		return new Tokenizer<T,C>(this.expression, operators);
 	}
 
 	/**

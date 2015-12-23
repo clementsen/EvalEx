@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * BigDecimal expression.
  */
-public class BigDecimalEx extends Expression<BigDecimal> {
+public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
 
     /**
      * Definition of PI as a constant, can be used in expressions as variable.
@@ -61,8 +61,6 @@ public class BigDecimalEx extends Expression<BigDecimal> {
 		this(expression, MathContext.DECIMAL32);
 	}
 
-
-
 	/**
 	 * Creates a new expression instance from an expression string with a given
 	 * default match context.
@@ -76,37 +74,37 @@ public class BigDecimalEx extends Expression<BigDecimal> {
 	public BigDecimalEx(String expression, MathContext defaultMathContext) {
         super(expression, defaultMathContext, BigDecimal::new, PARAMS_START);
 
-        addOperator(new Operator<BigDecimal>("+", 20, true) {
+        addOperator(new Operator<BigDecimal, MathContext>("+", 20, true) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.add(v2, mc);
             }
         });
-        addOperator(new Operator<BigDecimal>("-", 20, true) {
+        addOperator(new Operator<BigDecimal, MathContext>("-", 20, true) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.subtract(v2, mc);
             }
         });
-        addOperator(new Operator<BigDecimal>("*", 30, true) {
+        addOperator(new Operator<BigDecimal, MathContext>("*", 30, true) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.multiply(v2, mc);
             }
         });
-        addOperator(new Operator<BigDecimal>("/", 30, true) {
+        addOperator(new Operator<BigDecimal, MathContext>("/", 30, true) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.divide(v2, mc);
             }
         });
-        addOperator(new Operator<BigDecimal>("%", 30, true) {
+        addOperator(new Operator<BigDecimal, MathContext>("%", 30, true) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.remainder(v2, mc);
             }
         });
-        addOperator(new Operator<BigDecimal>("^", 40, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("^", 40, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
 				/*-
@@ -130,7 +128,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return result;
             }
         });
-        addOperator(new Operator<BigDecimal>("&&", 4, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("&&", 4, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 boolean b1 = !v1.equals(BigDecimal.ZERO);
@@ -139,7 +137,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
             }
         });
 
-        addOperator(new Operator<BigDecimal>("||", 2, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("||", 2, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 boolean b1 = !v1.equals(BigDecimal.ZERO);
@@ -148,21 +146,21 @@ public class BigDecimalEx extends Expression<BigDecimal> {
             }
         });
 
-        addOperator(new Operator<BigDecimal>(">", 10, false) {
+        addOperator(new Operator<BigDecimal, MathContext>(">", 10, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) == 1 ? BigDecimal.ONE : BigDecimal.ZERO;
             }
         });
 
-        addOperator(new Operator<BigDecimal>(">=", 10, false) {
+        addOperator(new Operator<BigDecimal, MathContext>(">=", 10, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) >= 0 ? BigDecimal.ONE : BigDecimal.ZERO;
             }
         });
 
-        addOperator(new Operator<BigDecimal>("<", 10, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("<", 10, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) == -1 ? BigDecimal.ONE
@@ -170,40 +168,40 @@ public class BigDecimalEx extends Expression<BigDecimal> {
             }
         });
 
-        addOperator(new Operator<BigDecimal>("<=", 10, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("<=", 10, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) <= 0 ? BigDecimal.ONE : BigDecimal.ZERO;
             }
         });
 
-        addOperator(new Operator<BigDecimal>("=", 7, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("=", 7, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) == 0 ? BigDecimal.ONE : BigDecimal.ZERO;
             }
         });
-        addOperator(new Operator<BigDecimal>("==", 7, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("==", 7, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) == 0 ? BigDecimal.ONE : BigDecimal.ZERO;
             }
         });
 
-        addOperator(new Operator<BigDecimal>("!=", 7, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("!=", 7, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) != 0 ? BigDecimal.ONE : BigDecimal.ZERO;
             }
         });
-        addOperator(new Operator<BigDecimal>("<>", 7, false) {
+        addOperator(new Operator<BigDecimal, MathContext>("<>", 7, false) {
             @Override
             public BigDecimal eval(BigDecimal v1, BigDecimal v2, MathContext mc) {
                 return v1.compareTo(v2) != 0 ? BigDecimal.ONE : BigDecimal.ZERO;
             }
         });
 
-        addFunction(new Function<BigDecimal>("NOT", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("NOT", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 boolean zero = parameters.get(0).compareTo(BigDecimal.ZERO) == 0;
@@ -211,7 +209,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
             }
         });
 
-        addFunction(new Function<BigDecimal>("IF", 3) {
+        addFunction(new Function<BigDecimal, MathContext>("IF", 3) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 boolean isTrue = !parameters.get(0).equals(BigDecimal.ZERO);
@@ -219,14 +217,14 @@ public class BigDecimalEx extends Expression<BigDecimal> {
             }
         });
 
-        addFunction(new Function<BigDecimal>("RANDOM", 0) {
+        addFunction(new Function<BigDecimal, MathContext>("RANDOM", 0) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.random();
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("SIN", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("SIN", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.sin(Math.toRadians(parameters.get(0)
@@ -234,7 +232,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("COS", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("COS", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.cos(Math.toRadians(parameters.get(0)
@@ -242,7 +240,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("TAN", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("TAN", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.tan(Math.toRadians(parameters.get(0)
@@ -250,7 +248,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("ASIN", 1) { // added by av
+        addFunction(new Function<BigDecimal, MathContext>("ASIN", 1) { // added by av
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.toDegrees(Math.asin(parameters.get(0)
@@ -258,7 +256,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("ACOS", 1) { // added by av
+        addFunction(new Function<BigDecimal, MathContext>("ACOS", 1) { // added by av
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.toDegrees(Math.acos(parameters.get(0)
@@ -266,7 +264,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("ATAN", 1) { // added by av
+        addFunction(new Function<BigDecimal, MathContext>("ATAN", 1) { // added by av
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.toDegrees(Math.atan(parameters.get(0)
@@ -274,42 +272,42 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("SINH", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("SINH", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.sinh(parameters.get(0).doubleValue());
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("COSH", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("COSH", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.cosh(parameters.get(0).doubleValue());
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("TANH", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("TANH", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.tanh(parameters.get(0).doubleValue());
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("RAD", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("RAD", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.toRadians(parameters.get(0).doubleValue());
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("DEG", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("DEG", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.toDegrees(parameters.get(0).doubleValue());
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("MAX", -1) {
+        addFunction(new Function<BigDecimal, MathContext>("MAX", -1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 if (parameters.size() == 0) {
@@ -324,7 +322,7 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return max;
             }
         });
-        addFunction(new Function<BigDecimal>("MIN", -1) {
+        addFunction(new Function<BigDecimal, MathContext>("MIN", -1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 if (parameters.size() == 0) {
@@ -339,27 +337,27 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return min;
             }
         });
-        addFunction(new Function<BigDecimal>("ABS", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("ABS", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 return parameters.get(0).abs(mc);
             }
         });
-        addFunction(new Function<BigDecimal>("LOG", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("LOG", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.log(parameters.get(0).doubleValue());
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("LOG10", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("LOG10", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 double d = Math.log10(parameters.get(0).doubleValue());
                 return new BigDecimal(d, mc);
             }
         });
-        addFunction(new Function<BigDecimal>("ROUND", 2) {
+        addFunction(new Function<BigDecimal, MathContext>("ROUND", 2) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 BigDecimal toRound = parameters.get(0);
@@ -367,21 +365,21 @@ public class BigDecimalEx extends Expression<BigDecimal> {
                 return toRound.setScale(precision, mc.getRoundingMode());
             }
         });
-        addFunction(new Function<BigDecimal>("FLOOR", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("FLOOR", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 BigDecimal toRound = parameters.get(0);
                 return toRound.setScale(0, RoundingMode.FLOOR);
             }
         });
-        addFunction(new Function<BigDecimal>("CEILING", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("CEILING", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
                 BigDecimal toRound = parameters.get(0);
                 return toRound.setScale(0, RoundingMode.CEILING);
             }
         });
-        addFunction(new Function<BigDecimal>("SQRT", 1) {
+        addFunction(new Function<BigDecimal, MathContext>("SQRT", 1) {
             @Override
             public BigDecimal eval(List<BigDecimal> parameters, MathContext mc) {
 				/*
@@ -419,9 +417,34 @@ public class BigDecimalEx extends Expression<BigDecimal> {
         setVariable("FALSE", BigDecimal.ZERO);
 	}
 
+    /**
+     * Sets the precision for expression evaluation.
+     *
+     * @param precision
+     *            The new precision.
+     *
+     * @return The expression, allows to chain methods.
+     */
+    public BigDecimalEx setPrecision(int precision) {
+        setContext(new MathContext(precision));
+        return this;
+    }
+
+    /**
+     * Sets the rounding mode for expression evaluation.
+     *
+     * @param roundingMode
+     *            The new rounding mode.
+     * @return The expression, allows to chain methods.
+     */
+    public BigDecimalEx setRoundingMode(RoundingMode roundingMode) {
+        setContext(new MathContext(getContext().getPrecision(), roundingMode));
+        return this;
+    }
+
     @Override
-    public BigDecimal round(BigDecimal value, MathContext mc) {
-        return value.round(mc);
+    public BigDecimal round(BigDecimal value, MathContext ctx) {
+        return value.round(ctx);
     }
 
     @Override
