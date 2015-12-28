@@ -43,12 +43,6 @@ public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
     public static final BigDecimal PI = new BigDecimal(
         "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679");
 
-    /**
-	 * The BigDecimal representation of the left parenthesis, 
-	 * used for parsing varying numbers of function parameters.
-	 */
-	private static final BigDecimal PARAMS_START = new BigDecimal(0);
-
 	/**
 	 * Creates a new expression instance from an expression string with a given
 	 * default match context of {@link MathContext#DECIMAL32}.
@@ -72,7 +66,7 @@ public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
 	 *            The {@link MathContext} to use by default.
 	 */
 	public BigDecimalEx(String expression, MathContext defaultMathContext) {
-        super(expression, defaultMathContext, BigDecimal::new, PARAMS_START);
+        super(expression, defaultMathContext);
 
         addOperator(new Operator<BigDecimal, MathContext>("+", 20, true) {
             @Override
@@ -388,7 +382,7 @@ public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
 				 */
                 BigDecimal x = parameters.get(0);
                 if (x.compareTo(BigDecimal.ZERO) == 0) {
-                    return new BigDecimal(0);
+                    return BigDecimal.ZERO;
                 }
                 if (x.signum() < 0) {
                     throw new ExpressionException(
@@ -417,6 +411,20 @@ public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
         setVariable("FALSE", BigDecimal.ZERO);
 	}
 
+    @Override
+    public BigDecimal round(BigDecimal value, MathContext ctx) {
+        return value.round(ctx);
+    }
+
+    @Override
+    public BigDecimal val(String val, MathContext ctx) {
+        return new BigDecimal(val, ctx);
+    }
+
+    public BigDecimal evalStripTrailingZeros() {
+        return eval().stripTrailingZeros();
+    }
+
     /**
      * Sets the precision for expression evaluation.
      *
@@ -441,15 +449,4 @@ public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
         setContext(new MathContext(getContext().getPrecision(), roundingMode));
         return this;
     }
-
-    @Override
-    public BigDecimal round(BigDecimal value, MathContext ctx) {
-        return value.round(ctx);
-    }
-
-    @Override
-    public BigDecimal stripTrailingZeros(BigDecimal value) {
-        return value.stripTrailingZeros();
-    }
-
 }

@@ -24,7 +24,7 @@ public abstract class PureFunction<T extends Number> extends Function<T, Void> {
 
     @Override
     public T eval(List<T> parameters, Void ctx) {
-        return eval(parameters, null);
+        return eval(parameters);
     }
 
     /**

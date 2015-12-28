@@ -128,7 +128,7 @@ public class TestEval {
 	
 	@Test
 	public void testSqrt() {
-		assertEquals("4", new BigDecimalEx("SQRT(16)").eval().toPlainString());
+		assertEquals("4", new BigDecimalEx("SQRT(16)").evalStripTrailingZeros().toPlainString());
 		assertEquals("1.4142135", new BigDecimalEx("SQRT(2)").eval().toPlainString());
 		assertEquals("1.41421356237309504880168872420969807856967187537694807317667973799073247846210703885038753432764157273501384623091229702492483605", new BigDecimalEx("SQRT(2)").setPrecision(128).eval().toPlainString());
 		assertEquals("2.2360679", new BigDecimalEx("SQRT(5)").eval().toPlainString());
@@ -140,7 +140,7 @@ public class TestEval {
 	@Test
 	public void testFunctions() {
 		assertNotSame("1.5", new BigDecimalEx("Random()").eval().toPlainString());
-		assertEquals("0.400349", new BigDecimalEx("SIN(23.6)").eval().toPlainString());
+		assertEquals("0.400349", new BigDecimalEx("SIN(23.6)").evalStripTrailingZeros().toPlainString());
 		assertEquals("8", new BigDecimalEx("MAX(-7,8)").eval().toPlainString());
 		assertEquals("5", new BigDecimalEx("MAX(3,max(4,5))").eval().toPlainString());
 		assertEquals("9.6", new BigDecimalEx("MAX(3,max(MAX(9.6,-4.2),Min(5,9)))").eval().toPlainString());
@@ -194,7 +194,7 @@ public class TestEval {
 
 	@Test
 	public void testTrigonometry() {
-		assertEquals("0.5", new BigDecimalEx("SIN(30)").eval().toPlainString());
+		assertEquals("0.5", new BigDecimalEx("SIN(30)").evalStripTrailingZeros().toPlainString());
 		assertEquals("0.8660254", new BigDecimalEx("cos(30)").eval().toPlainString());
 		assertEquals("0.5773503", new BigDecimalEx("TAN(30)").eval().toPlainString());
 		assertEquals("5343237000000", new BigDecimalEx("SINH(30)").eval().toPlainString());

@@ -47,22 +47,22 @@ public class TestSciNotation {
 	@Test
 	public void testCombined() {
 		BigDecimalEx e = new BigDecimalEx("sqrt(152.399025e6)", MathContext.DECIMAL64);
-		assertEquals("12345", e.eval().toPlainString());
+		assertEquals("12345", e.evalStripTrailingZeros().toPlainString());
 		
 		e = new BigDecimalEx("sin(3.e1)");
-		assertEquals("0.5", e.eval().toPlainString());
+		assertEquals("0.5", e.evalStripTrailingZeros().toPlainString());
 		
 		e = new BigDecimalEx("sin( 3.e1)");
-		assertEquals("0.5", e.eval().toPlainString());
+		assertEquals("0.5", e.evalStripTrailingZeros().toPlainString());
 		
 		e = new BigDecimalEx("sin(3.e1 )");
-		assertEquals("0.5", e.eval().toPlainString());
+		assertEquals("0.5", e.evalStripTrailingZeros().toPlainString());
 		
 		e = new BigDecimalEx("sin( 3.e1 )");
-		assertEquals("0.5", e.eval().toPlainString());
+		assertEquals("0.5", e.evalStripTrailingZeros().toPlainString());
 		
 		e = new BigDecimalEx("2.2e-16 * 10.2");;
-		assertEquals("2.244E-15", e.eval().toString());
+		assertEquals("2.244E-15", e.evalStripTrailingZeros().toString());
 	}
 	
 	@Test(expected=NumberFormatException.class)

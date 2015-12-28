@@ -42,7 +42,7 @@ public class DoubleEx extends Expression<Double,Void> {
 	 *            <code>"sin(y)>0 & max(z, 3)>3"</code>
 	 */
 	public DoubleEx(String expression) {
-        super(expression, null, (v,mc) -> new Double(v), 0D);
+        super(expression, null);
 
         addOperator(new PureOperator<Double>("+", 20, true) {
             @Override
@@ -335,8 +335,8 @@ public class DoubleEx extends Expression<Double,Void> {
     }
 
     @Override
-    public Double stripTrailingZeros(Double value) {
-        return value;
+    public Double val(String val, Void ctx) {
+        return new Double(val);
     }
 
 }

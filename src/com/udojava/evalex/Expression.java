@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
-import java.util.function.BiFunction;
 
 /**
  * <h1>EvalEx - Java Expression Evaluator</h1>
@@ -389,26 +388,20 @@ public abstract class Expression<T extends Number, C> {
 	 * The BigDecimal representation of the left parenthesis,
 	 * used for parsing varying numbers of function parameters.
 	 */
-	private T PARAMS_START;
+	private final T PARAMS_START = null;
 
 	/**
 	 * Creates a new expression instance from an expression string with a given
 	 * default match context.
-	 *
-	 * @param expression
+	 *  @param expression
 	 *            The expression. E.g. <code>"2.4*sin(3)/(2-4)"</code> or
 	 *            <code>"sin(y)>0 & max(z, 3)>3"</code>
-	 * @param ctx
-	 *            The context to use by default.
-	 */
-	public Expression(String expression, C ctx, BiFunction<String, C, T> val, T paramsStart) {
+	 * @param ctx The context to use.
+     */
+	public Expression(String expression, C ctx) {
 		this.ctx = ctx;
 		this.expression = expression;
-        this.val = val;
-        this.PARAMS_START = paramsStart;
 	}
-
-    private BiFunction<String, C, T> val;
 
 	/**
 	 * Is the string a number?
@@ -522,7 +515,25 @@ public abstract class Expression<T extends Number, C> {
 		return outputQueue;
 	}
 
-    public abstract T round(T value, C ctx);
+    /**
+     * Round a value using context. Default is no round.
+     *
+     * @param value to round
+     * @param ctx the context to use
+     * @return rounded value
+     */
+    public T round(T value, C ctx) {
+        return value;
+    }
+
+    /**
+     * Convert a string to a value.
+     *
+     * @param val string representation of a value
+     * @param ctx the context to use
+     * @return value
+     */
+    public abstract T val(String val, C ctx);
 
 	/**
 	 * Evaluates the expression.
@@ -560,13 +571,11 @@ public abstract class Expression<T extends Number, C> {
 			} else if ("(".equals(token)) {
 				stack.push(PARAMS_START);
 			} else {
-				stack.push(val.apply(token, ctx));
+				stack.push(val(token, ctx));
 			}
 		}
-		return stripTrailingZeros(stack.pop());
+		return stack.pop();
 	}
-
-    public abstract T stripTrailingZeros(T value);
 
     /**
      * Sets the context for expression evaluation.
@@ -636,7 +645,7 @@ public abstract class Expression<T extends Number, C> {
 	 */
 	public Expression<T,C> setVariable(String variable, String value) {
 		if (isNumber(value))
-			variables.put(variable, val.apply(value, ctx));
+			variables.put(variable, val(value, ctx));
 		else {
 			expression = expression.replaceAll("\\b" + variable + "\\b", "("
 					+ value + ")");
