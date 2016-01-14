@@ -49,7 +49,7 @@ public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
 	 * 
 	 * @param expression
 	 *            The expression. E.g. <code>"2.4*sin(3)/(2-4)"</code> or
-	 *            <code>"sin(y)>0 & max(z, 3)>3"</code>
+	 *            {@code "sin(y)>0 & max(z, 3)>3"}
 	 */
 	public BigDecimalEx(String expression) {
 		this(expression, MathContext.DECIMAL32);
@@ -61,7 +61,7 @@ public class BigDecimalEx extends Expression<BigDecimal, MathContext> {
 	 * 
 	 * @param expression
 	 *            The expression. E.g. <code>"2.4*sin(3)/(2-4)"</code> or
-	 *            <code>"sin(y)>0 & max(z, 3)>3"</code>
+	 *            {@code "sin(y)>0 & max(z, 3)>3"}
 	 * @param defaultMathContext
 	 *            The {@link MathContext} to use by default.
 	 */

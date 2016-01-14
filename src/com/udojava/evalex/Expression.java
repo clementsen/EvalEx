@@ -53,7 +53,7 @@ import java.util.Stack;
  * <br>
  * <h2>Examples</h2>
  * 
- * <pre>
+ * {@code
  *  BigDecimal result = null;
  *  
  *  Expression expression = new Expression("1+1/3");
@@ -74,14 +74,12 @@ import java.util.Stack;
  *  result = new Expression("random() > 0.5").eval();
  * 
  *  result = new Expression("not(x<7 || sqrt(max(x,9)) <= 3))").with("x","22.9").eval();
- * </pre>
+ * }
  * 
  * <br>
  * <h2>Supported Operators</h2>
  * <table>
- * <tr>
- * <th>Mathematical Operators</th>
- * </tr>
+ * <caption>Mathematical Operators</caption>
  * <tr>
  * <th>Operator</th>
  * <th>Description</th>
@@ -113,9 +111,7 @@ import java.util.Stack;
  * </table>
  * <br>
  * <table>
- * <tr>
- * <th>Boolean Operators<sup>*</sup></th>
- * </tr>
+ * <caption>Boolean Operators<sup>*</sup></caption>
  * <tr>
  * <th>Operator</th>
  * <th>Description</th>
@@ -166,6 +162,7 @@ import java.util.Stack;
  * a function. <br>
  * <h2>Supported Functions</h2>
  * <table>
+ * <caption>Functions</caption>
  * <tr>
  * <th>Function<sup>*</sup></th>
  * <th>Description</th>
@@ -270,6 +267,7 @@ import java.util.Stack;
  * *Functions names are case insensitive. <br>
  * <h2>Supported Constants</h2>
  * <table>
+ * <caption>Constants</caption>
  * <tr>
  * <th>Constant</th>
  * <th>Description</th>
@@ -295,10 +293,10 @@ import java.util.Stack;
  * operator string, its precedence and if it is left associative. The operators
  * `eval()` method will be called with the BigDecimal values of the operands.
  * All existing operators can also be overridden. <br>
- * For example, add an operator `x >> n`, that moves the decimal point of _x_
+ * For example, add an operator {@code `x >> n`}, that moves the decimal point of _x_
  * _n_ digits to the right:
  * 
- * <pre>
+ * {@code
  * Expression e = new Expression("2.1234 >> 2");
  * 
  * e.addOperator(e.new Operator(">>", 30, true) {
@@ -309,7 +307,7 @@ import java.util.Stack;
  * });
  * 
  * e.eval(); // returns 212.34
- * </pre>
+ * }
  * 
  * <br>
  * <h2>Add Custom Functions</h2>
@@ -323,7 +321,7 @@ import java.util.Stack;
  * For example, add a function `average(a,b,c)`, that will calculate the average
  * value of a, b and c: <br>
  * 
- * <pre>
+ * {@code
  * Expression e = new Expression("2 * average(12,4,8)");
  * 
  * e.addFunction(e.new Function("average", 3) {
@@ -335,7 +333,7 @@ import java.util.Stack;
  * });
  * 
  * e.eval(); // returns 16
- * </pre>
+ * }
  * 
  * The software is licensed under the MIT Open Source license (see LICENSE
  * file). <br>
@@ -395,7 +393,7 @@ public abstract class Expression<T extends Number, C> {
 	 * default match context.
 	 *  @param expression
 	 *            The expression. E.g. <code>"2.4*sin(3)/(2-4)"</code> or
-	 *            <code>"sin(y)>0 & max(z, 3)>3"</code>
+	 *            {@code "sin(y)>0 & max(z, 3)>3"}
 	 * @param ctx The context to use.
      */
 	public Expression(String expression, C ctx) {

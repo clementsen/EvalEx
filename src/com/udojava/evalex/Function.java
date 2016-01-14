@@ -51,7 +51,7 @@ public abstract class Function<T extends Number, C> {
      * @param parameters
      *            Parameters will be passed by the expression evaluator as a
      *            {@link List} of values.
-     * @param ctx
+     * @param ctx context
      * @return The function must return a new value as a
      *         computing result.
      */

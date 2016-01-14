@@ -39,7 +39,7 @@ public class DoubleEx extends Expression<Double,Void> {
 	 *
 	 * @param expression
 	 *            The expression. E.g. <code>"2.4*sin(3)/(2-4)"</code> or
-	 *            <code>"sin(y)>0 & max(z, 3)>3"</code>
+	 *            {@code "sin(y)>0 & max(z, 3)>3"}
 	 */
 	public DoubleEx(String expression) {
         super(expression, null);
